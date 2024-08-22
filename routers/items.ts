@@ -3,7 +3,7 @@ import mysqlDb from '../mysqlDb';
 import {Inventories, InventoriesMutation, InventoriesWithoutId} from '../types';
 import {ResultSetHeader} from 'mysql2';
 import {imagesUpload} from '../multer';
-import * as fs from 'node:fs';
+import {promises as fs} from 'fs';
 
 const itemsRouter = express.Router();
 
@@ -56,7 +56,7 @@ itemsRouter.post('/', imagesUpload.single('image'), async (req, res, next) => {
   try {
     if (!req.body.categoryId || !req.body.locationId || !req.body.name) {
       if (req.file) {
-        await fs.promises.unlink(req.file.path);
+        await fs.unlink(req.file.path);
       }
       return res.status(400).send({'Ошибка': 'Category ID, Location ID и Name должны быть указаны!'});
     }
@@ -114,7 +114,7 @@ itemsRouter.put('/:id', imagesUpload.single('image'), async (req, res, next) => 
 
     if (!req.body.categoryId || !req.body.locationId || !req.body.name) {
       if (req.file) {
-        await fs.promises.unlink(req.file.path);
+        await fs.unlink(req.file.path);
       }
       return res.status(400).send({'Ошибка': 'Category ID, Location ID и Name должны быть указаны.'});
     }
@@ -135,6 +135,9 @@ itemsRouter.put('/:id', imagesUpload.single('image'), async (req, res, next) => 
     const selectItem = searchItem[0] as Inventories[];
 
     if (selectItem.length === 0) {
+      if (req.file) {
+        await fs.unlink(req.file.path);
+      }
       return res.status(404).send({'Ошибка': 'ID для обновления предмета учета не найдено!'});
     }
 

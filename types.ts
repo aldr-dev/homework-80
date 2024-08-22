@@ -5,6 +5,7 @@ export interface Inventories {
   name: string;
   description: string | null;
   image: string | null;
+  created_at?: string;
 }
 
 export interface InventoriesMutation extends Inventories {
@@ -14,6 +15,7 @@ export interface InventoriesMutation extends Inventories {
   category_name: string;
   location_id: number;
   location_name: string;
+  created_at?: string;
 }
 
 export type InventoriesWithoutId = Omit<Inventories, 'id'>;
