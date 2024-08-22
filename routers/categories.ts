@@ -8,7 +8,7 @@ const categoriesRouter = express.Router();
 categoriesRouter.get('/', async (_, res, next) => {
   try {
     const result = await mysqlDb.getConnection().query(
-      'SELECT id, title FROM categories'
+      'SELECT id, name FROM categories'
     );
 
     const category = result[0] as Resources[];
@@ -44,18 +44,18 @@ categoriesRouter.get('/:id', async (req, res, next) => {
 categoriesRouter.post('/', async (req, res, next) => {
   try {
 
-    if (!req.body.title) {
+    if (!req.body.name) {
       return res.status(400).send({'Ошибка': 'Название категории должно присутствовать!'});
     }
 
     const category: ResourcesWithoutId = {
-      title: req.body.title,
+      name: req.body.name,
       description: req.body.description ? req.body.description : null,
     };
 
     const insertResult = await mysqlDb.getConnection().query(
-      'INSERT INTO categories (title, description) VALUES (?, ?)',
-      [category.title, category.description],
+      'INSERT INTO categories (name, description) VALUES (?, ?)',
+      [category.name, category.description],
     );
 
     const resultHeader = insertResult[0] as ResultSetHeader;
@@ -103,12 +103,12 @@ categoriesRouter.delete('/:id', async (req, res, next) => {
 categoriesRouter.put('/:id', async (req, res, next) => {
   try {
     const id = req.params.id;
-    if (!req.body.title) {
+    if (!req.body.name) {
       return res.status(400).send({'Ошибка': 'Название категории должно присутствовать!'});
     }
 
     const category: ResourcesWithoutId = {
-      title: req.body.title,
+      name: req.body.name,
       description: req.body.description ? req.body.description : null,
     };
 
@@ -124,8 +124,8 @@ categoriesRouter.put('/:id', async (req, res, next) => {
     }
 
     await mysqlDb.getConnection().query(
-      'UPDATE categories SET title = ?, description = ? WHERE id = ?',
-      [category.title, category.description, id],
+      'UPDATE categories SET name = ?, description = ? WHERE id = ?',
+      [category.name, category.description, id],
     );
 
     const result = await mysqlDb.getConnection().query(
